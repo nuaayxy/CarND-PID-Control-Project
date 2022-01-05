@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 #include <vector>
+#include <numeric>
+#include <deque>
 
 class PID {
  public:
@@ -26,6 +28,9 @@ class PID {
    */
   double UpdateError(double cte);
 
+
+  void Twiddle(double cte);
+
   /**
    * Calculate the total PID error.
    * @output The total PID error
@@ -43,6 +48,7 @@ class PID {
   double prev_cte = 0;
   double int_cte = 0;
   double best_cte = 990;
+  std::vector<double> dp ;
 
  private:
   /**
@@ -59,7 +65,9 @@ class PID {
   double Ki;
   double Kd;
 
-  std::vector<float> errorVec;
+  std::deque<double> errorVec;
+  std::vector<double> p;
+  double cur_average_cte;
 };
 
 #endif  // PID_H

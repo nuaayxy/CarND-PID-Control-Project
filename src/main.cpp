@@ -4,6 +4,7 @@
 #include <string>
 #include "json.hpp"
 #include "PID.h"
+#include <chrono>
 
 // for convenience
 using nlohmann::json;
@@ -40,6 +41,10 @@ int main() {
    * TODO: Initialize the pid variable.
    */
 
+
+ 
+
+
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -59,6 +64,10 @@ int main() {
           double speed = std::stod(j[1]["speed"].get<string>());
           double angle = std::stod(j[1]["steering_angle"].get<string>());
           double steer_value;
+
+          auto p1 = std::chrono::system_clock::now();
+          //data is coming like 50ms per cycle
+          std::cout << "seconds since epoch: "  << std::chrono::duration_cast<std::chrono::milliseconds>(p1.time_since_epoch()).count() << '\n';
           /**
            * TODO: Calculate steering value here, remember the steering value is
            *   [-1, 1].
@@ -73,8 +82,6 @@ int main() {
           double alpha = 0.88;
           average_steer = alpha * steer_value + (1- alpha)*average_steer;
           steer_value = average_steer;
-
-          std::cout<<pid.int_cte<<std::endl;
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
