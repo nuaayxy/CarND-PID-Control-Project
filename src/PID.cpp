@@ -51,41 +51,55 @@ void PID::Twiddle(double cte)
 {
     //need some flags help the flow
     //twiddle addest the PID parameters in the beginning of 1000 datapoint of cte data
-    static bool flag_skip = true;
-    double sum_dp = std::accumulate(dp.begin(), dp.end(), 0);
+    static bool flag_change_parameter = true;
+    static bool flag_compare_error = false;
     static int i = 0;
+
+    double sum_dp = std::accumulate(dp.begin(), dp.end(), 0);
+
     int p_size = p.size();
 
     if(sum_dp > 0.2 && i <= 200 )
     {
-     i %= p_size;
-     p[i] += dp[i];    
+    
+     if(flag_change_parameter)
+     {
+        i %= p_size;
+        p[i] += dp[i];
+        // flag_change_parameter = false;
+     }   
      //get updated error from new parameteres
      //cte should be the next updated average cte after the parametere change
-     if(cte < best_cte)
-     {      
-         best_cte = cte;
-         dp[i]*= 1.1;
-     }
-     else
+     if(flag_compare_error)
      {
-         p[i]-=2*dp[i];
-         //get updated error for new parameters
-         //set flag, need to get updated cte average
-         if(cte < best_cte)
-         {
-             best_cte = cte;
-             dp[i] *=1.1;
+        if(cte < best_cte )
+        {      
+            best_cte = cte;
+            dp[i]*= 1.1;
+            // flag_compare_error = false;
+            // flag_change_parameter = true;
+        }
+        else
+        {
+            p[i]-=2*dp[i];
+            //get updated error for new parameters
+            //set flag, need to get updated cte average
+            if(cte < best_cte)
+            {
+                best_cte = cte;
+                dp[i] *=1.1;
 
-         }
-         else
-         {
-             p[i] +=dp[i];
-             dp[i] *=0.9;
+            }
+            else
+            {
+                p[i] +=dp[i];
+                dp[i] *=0.9;
 
-         }
+            }
 
+        }
      }
+     flag_compare_error = true;
            
 
 
