@@ -10,6 +10,10 @@ PID control project reflection
 4. Here is a video of the implemenation running the car with the PID control
 
 
+https://user-images.githubusercontent.com/8016115/148288345-71ebca6b-eb26-4f28-a07b-1019f44884c6.mp4
+
+
+
 ## Disscussion
 
 1. manually selected initial PID parameters after trial and error
