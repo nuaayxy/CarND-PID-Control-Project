@@ -34,6 +34,8 @@ int main() {
   uWS::Hub h;
 
   PID pid;
+  pid.Init(0.93, 0.0049, 10.3 );
+  
   /**
    * TODO: Initialize the pid variable.
    */
@@ -63,6 +65,16 @@ int main() {
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
+
+          steer_value = pid.UpdateError(cte);
+
+          static double average_steer = steer_value;
+          //exponetial average to make the ride smoother?
+          double alpha = 0.88;
+          average_steer = alpha * steer_value + (1- alpha)*average_steer;
+          steer_value = average_steer;
+
+          std::cout<<pid.int_cte<<std::endl;
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
