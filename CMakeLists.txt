@@ -1,7 +1,7 @@
 project(PID)
 
 cmake_minimum_required (VERSION 3.5)
-
+find_package( Threads REQUIRED )
 add_definitions(-std=c++11)
 
 set(CXX_FLAGS "-Wall")
@@ -23,4 +23,4 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 add_executable(pid ${sources})
 
-target_link_libraries(pid z ssl uv uWS)
+target_link_libraries(pid z ssl uv uWS Threads::Threads)
