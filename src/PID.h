@@ -3,6 +3,7 @@
 #include <vector>
 #include <numeric>
 #include <deque>
+#include <thread>
 
 class PID {
  public:
@@ -29,7 +30,7 @@ class PID {
   double UpdateError(double cte);
 
 
-  void Twiddle(double cte);
+  void Twiddle();
 
   /**
    * Calculate the total PID error.
@@ -37,18 +38,17 @@ class PID {
    */
   double TotalError();
 
-  double x;
-  double y;
-  double orientation;
-  double length;
-  double steering_noise;
-  double distance_noise;
-  double steering_drift;
+  double GetError();
+
+  std::vector<double> GetPID();
 
   double prev_cte = 0;
   double int_cte = 0;
   double best_cte = 990;
   std::vector<double> dp ;
+  std::thread twiddleThread;
+  bool start = false;
+  double cur_cte;
 
  private:
   /**
@@ -68,6 +68,7 @@ class PID {
   std::deque<double> errorVec;
   std::vector<double> p;
   double cur_average_cte;
+
 };
 
 #endif  // PID_H
